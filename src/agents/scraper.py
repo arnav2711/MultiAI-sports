@@ -19,7 +19,6 @@ def bing_search_scraper(query, num_results=5):
     soup = BeautifulSoup(response.text, "html.parser")
     results = []
 
-    # Bing search results links are usually in <li class="b_algo"> with <a href=...>
     for li in soup.find_all('li', class_='b_algo'):
         a_tag = li.find('a', href=True)
         if a_tag:
@@ -28,7 +27,6 @@ def bing_search_scraper(query, num_results=5):
                 break
 
     return results
-
 
 def fetch_page_html(url):
     """
@@ -47,19 +45,32 @@ def fetch_page_html(url):
         print(f"Error fetching {url}: {e}")
         return None
 
+def process_page_content(url, html_content):
+    """
+    Placeholder for the next agent.
+    Currently just prints a snippet of the HTML content.
+    """
+    print(f"\nProcessing content from: {url}")
+    print(f"Content length: {len(html_content)} characters")
+    print(f"First 500 characters:\n{html_content[:500]}")
 
 if __name__ == "__main__":
     team_name = "Manchester United injuries site:whoscored.com"
     print(f"Searching URLs for: {team_name}")
 
     urls = bing_search_scraper(team_name)
+
     if urls:
+        print("\nFound URLs:")
         for i, url in enumerate(urls, 1):
             print(f"{i}. {url}")
+
+        for url in urls:
             html = fetch_page_html(url)
             if html:
-                print(f"--- Fetched {len(html)} characters of HTML ---\n")
+                process_page_content(url, html)
             else:
-                print("Failed to fetch page content.\n")
+                print(f"Failed to fetch page content for {url}")
+
     else:
         print("No URLs found.")
