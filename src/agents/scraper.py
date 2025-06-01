@@ -29,9 +29,6 @@ def bing_search_scraper(query, num_results=5):
     return results
 
 def fetch_page_html(url):
-    """
-    Fetch the raw HTML content of a URL.
-    """
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                       "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -46,19 +43,16 @@ def fetch_page_html(url):
         return None
 
 def process_page_content(url, html_content):
-    """
-    Placeholder for the next agent.
-    Currently just prints a snippet of the HTML content.
-    """
     print(f"\nProcessing content from: {url}")
     print(f"Content length: {len(html_content)} characters")
     print(f"First 500 characters:\n{html_content[:500]}")
 
-if __name__ == "__main__":
-    team_name = "Manchester United injuries site:whoscored.com"
+def scrape_team_injuries(team_name="Manchester United injuries site:whoscored.com", num_results=5):
     print(f"Searching URLs for: {team_name}")
 
-    urls = bing_search_scraper(team_name)
+    urls = bing_search_scraper(team_name, num_results)
+
+    all_data = []
 
     if urls:
         print("\nFound URLs:")
@@ -68,9 +62,21 @@ if __name__ == "__main__":
         for url in urls:
             html = fetch_page_html(url)
             if html:
+                all_data.append({
+                    "url": url,
+                    "html": html
+                })
                 process_page_content(url, html)
             else:
                 print(f"Failed to fetch page content for {url}")
 
     else:
         print("No URLs found.")
+
+    return all_data
+
+
+if __name__ == "__main__":
+    # If you want to run this file standalone
+    data = scrape_team_injuries()
+    print(f"\nCollected data for {len(data)} pages.")
