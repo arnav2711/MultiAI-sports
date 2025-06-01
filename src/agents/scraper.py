@@ -29,6 +29,25 @@ def bing_search_scraper(query, num_results=5):
 
     return results
 
+
+def fetch_page_html(url):
+    """
+    Fetch the raw HTML content of a URL.
+    """
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                      "AppleWebKit/537.36 (KHTML, like Gecko) "
+                      "Chrome/114.0.0.0 Safari/537.36"
+    }
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+        return response.text
+    except requests.RequestException as e:
+        print(f"Error fetching {url}: {e}")
+        return None
+
+
 if __name__ == "__main__":
     team_name = "Manchester United injuries site:whoscored.com"
     print(f"Searching URLs for: {team_name}")
@@ -37,5 +56,10 @@ if __name__ == "__main__":
     if urls:
         for i, url in enumerate(urls, 1):
             print(f"{i}. {url}")
+            html = fetch_page_html(url)
+            if html:
+                print(f"--- Fetched {len(html)} characters of HTML ---\n")
+            else:
+                print("Failed to fetch page content.\n")
     else:
         print("No URLs found.")
